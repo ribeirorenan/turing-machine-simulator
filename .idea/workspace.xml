@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0b973393-a8f0-4b7a-85af-0af04752ae02" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ab.mt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/tms/model/State.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/tms/model/Transition.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/turing-machine-simulator/Main.class" afterPath="$PROJECT_DIR$/out/production/turing-machine-simulator/Main.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tms/controller/FileHandler.java" afterPath="$PROJECT_DIR$/src/tms/controller/FileHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tms/model/TuringMachine.java" afterPath="$PROJECT_DIR$/src/tms/model/TuringMachine.java" />
     </list>
     <ignored path="turing-machine-simulator.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -44,7 +37,7 @@
         <entry file="file://$PROJECT_DIR$/src/tms/model/TuringMachine.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="364">
-              <caret line="26" column="4" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
+              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -579,7 +572,14 @@
       <option name="project" value="LOCAL" />
       <updated>1496711472614</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Modeling the Subclasses of a Turing Machine">
+      <created>1496775918838</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1496775918838</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -628,7 +628,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial Commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial Commit" />
+    <MESSAGE value="Modeling the Subclasses of a Turing Machine" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modeling the Subclasses of a Turing Machine" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -765,7 +766,7 @@
     <entry file="file://$PROJECT_DIR$/src/tms/model/TuringMachine.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="364">
-          <caret line="26" column="4" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
