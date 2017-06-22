@@ -11,20 +11,25 @@ import java.util.HashMap;
 public class TuringMachine {
 
     private HashMap<Integer, State> states;
+    private Tape tape;
 
-    public TuringMachine(){
+    public TuringMachine(String fita){
         this.states = new HashMap<>();
+        this.tape = new Tape(fita);
     }
 
-    public void simulate(){
-
+    public void loadFile(){
         FileHandler fileHandler = new FileHandler("ab.mt");
 
         try {
-            fileHandler.tokenizerFile(states);
+            fileHandler.loadMachine(states);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void run(){
 
     }
 
@@ -34,5 +39,13 @@ public class TuringMachine {
 
     public void setStates(HashMap<Integer, State> states) {
         this.states = states;
+    }
+
+    public Tape getTape() {
+        return tape;
+    }
+
+    public void setTape(Tape tape) {
+        this.tape = tape;
     }
 }

@@ -24,4 +24,9 @@ public class HaltTransition implements Transition {
                 "haltMessage='" + haltMessage + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean isHalt() {
+        return true;
+    }
 }

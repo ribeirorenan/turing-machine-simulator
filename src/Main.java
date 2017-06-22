@@ -1,7 +1,4 @@
-import tms.controller.FileHandler;
 import tms.model.TuringMachine;
-
-import java.io.IOException;
 
 /**
  * Created by renan on 6/5/17.
@@ -9,11 +6,17 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
 
-        TuringMachine turingMachine = new TuringMachine();
+        TuringMachine turingMachine = new TuringMachine("aabb");
 
-        turingMachine.simulate();
+        //Instantiate the states and transitions from a file
+        turingMachine.loadFile();
 
-        System.out.println(turingMachine.getStates().toString());
+        //Run the turing machine
 
+        System.out.println(turingMachine.getTape().getHeader());
+        turingMachine.getTape().write('c');
+        System.out.println(turingMachine.getTape().getHeader());
+        turingMachine.getTape().moveRight();
+        System.out.println(turingMachine.getTape().getHeader());
     }
 }

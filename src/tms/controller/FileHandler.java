@@ -23,7 +23,7 @@ public class FileHandler {
     }
 
 
-    public void tokenizerFile(HashMap<Integer, State> states)throws IOException {
+    public void loadMachine(HashMap<Integer, State> states)throws IOException {
         fileReader = new BufferedReader(new FileReader(path));
 
 

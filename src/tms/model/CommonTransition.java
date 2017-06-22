@@ -57,4 +57,9 @@ public class CommonTransition implements Transition {
     public void setNextState(int nextState) {
         this.nextState = nextState;
     }
+
+    @Override
+    public boolean isHalt() {
+        return false;
+    }
 }
