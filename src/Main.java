@@ -13,5 +13,7 @@ public class Main {
 
         turingMachine.simulate();
 
+        System.out.println(turingMachine.getStates().toString());
+
     }
 }

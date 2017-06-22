@@ -11,7 +11,7 @@ public class State {
 
     public State(int id) {
         this.id = id;
-        transitions = new ArrayList<Transition>();
+        transitions = new ArrayList<>();
     }
 
     public boolean addTransition(Transition transition){
@@ -34,11 +34,12 @@ public class State {
         this.transitions = transitions;
     }
 
+
     @Override
     public String toString() {
         return "State{" +
                 "id=" + id +
-                ", transitions=" + transitions +
+                ", Transitions=" + transitions +
                 '}';
     }
 }
