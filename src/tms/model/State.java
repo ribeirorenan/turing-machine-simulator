@@ -14,6 +14,40 @@ public class State {
         transitions = new ArrayList<>();
     }
 
+    public int getNumberOfTransitions(char symbol){
+
+        int quantity = 0;
+
+        for (Transition transition:transitions) {
+            if(transition.getRead() == symbol){
+                quantity++;
+            }
+        }
+
+        return quantity;
+    }
+
+
+    public Transition getTransition(char symbol){
+        for (Transition transition:transitions) {
+            if(transition.getRead() == symbol){
+                return transition;
+            }
+        }
+
+        return null;
+    }
+
+    public Transition getHaltTransition(){
+        for (Transition transition: transitions) {
+            if(transition.isHalt()){
+                return transition;
+            }
+        }
+        return null;
+    }
+
+
     public boolean addTransition(Transition transition){
         return transitions.add(transition);
     }

@@ -54,6 +54,11 @@ public class CommonTransition implements Transition {
         return nextState;
     }
 
+    @Override
+    public String getMessage() {
+        return "Common Transition";
+    }
+
     public void setNextState(int nextState) {
         this.nextState = nextState;
     }

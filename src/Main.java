@@ -1,4 +1,4 @@
-import tms.model.TuringMachine;
+import tms.controller.TuringMachine;
 
 /**
  * Created by renan on 6/5/17.
@@ -12,11 +12,6 @@ public class Main {
         turingMachine.loadFile();
 
         //Run the turing machine
-
-        System.out.println(turingMachine.getTape().getHeader());
-        turingMachine.getTape().write('c');
-        System.out.println(turingMachine.getTape().getHeader());
-        turingMachine.getTape().moveRight();
-        System.out.println(turingMachine.getTape().getHeader());
+        turingMachine.simulate();
     }
 }

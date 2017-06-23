@@ -13,17 +13,27 @@ public class Tape {
 
     public Tape(String tape) {
         /*Creates a string with the initial word and 20 spaces on both sides*/
-        this.tape = "                    ";
+        this.tape = "____________________";
         this.tape = this.tape + tape;
-        this.tape = this.tape + "                    ";
+        this.tape = this.tape + "____________________";
 
         /*Put the position to the first letter*/
         position = 20;
     }
 
     public String getTape() {
-        return tape;
+        return tape.substring(0, position) + "<" + tape.substring(position, position+1) + ">" + tape.substring(position+1, tape.length());
     }
+
+    public void move(char symbol){
+        if(symbol == 'l'){
+            moveLeft();
+        }
+        else if(symbol == 'd'){
+            moveRight();
+        }
+    }
+
 
     public void moveLeft(){
         position--;

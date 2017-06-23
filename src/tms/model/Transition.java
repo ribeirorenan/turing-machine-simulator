@@ -5,4 +5,9 @@ package tms.model;
  */
 public interface Transition {
     public boolean isHalt();
+    public char getRead();
+    public char getWrite();
+    public char getMovement();
+    public int getNextState();
+    public String getMessage();
 }

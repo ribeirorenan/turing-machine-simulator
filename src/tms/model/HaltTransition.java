@@ -10,6 +10,8 @@ public class HaltTransition implements Transition {
         this.haltMessage = haltMessage;
     }
 
+
+
     public String getHaltMessage() {
         return haltMessage;
     }
@@ -28,5 +30,30 @@ public class HaltTransition implements Transition {
     @Override
     public boolean isHalt() {
         return true;
+    }
+
+    @Override
+    public char getRead() {
+        return 0;
+    }
+
+    @Override
+    public char getWrite() {
+        return 0;
+    }
+
+    @Override
+    public char getMovement() {
+        return 0;
+    }
+
+    @Override
+    public int getNextState() {
+        return 0;
+    }
+
+    @Override
+    public String getMessage() {
+        return haltMessage;
     }
 }
