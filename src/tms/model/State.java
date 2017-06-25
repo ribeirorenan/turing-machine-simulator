@@ -27,6 +27,16 @@ public class State {
         return quantity;
     }
 
+    public ArrayList<Transition> getTransitions(char symbol){
+
+        ArrayList<Transition> transitions = new ArrayList<>();
+
+        this.transitions.stream().filter(transition -> transition.getRead() == symbol).forEach(transition -> transitions.add(transition));
+
+        return transitions;
+    }
+
+
 
     public Transition getTransition(char symbol){
         for (Transition transition:transitions) {

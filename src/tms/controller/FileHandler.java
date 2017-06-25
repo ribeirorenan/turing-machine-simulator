@@ -67,7 +67,18 @@ public class FileHandler {
             tokenizer.nextToken();
             write = tokenizer.nextToken().charAt(0);
             movement = tokenizer.nextToken().charAt(0);
-            nextState = Integer.parseInt(tokenizer.nextToken());
+
+            /*BETA*
+            /*TODO: Need to add the others! */
+            /*Check if it is '*'*/
+            String nextStateString = tokenizer.nextToken();
+            if(nextStateString.contains("*")){
+                nextState = actualState;
+            }
+            else{
+                nextState = Integer.parseInt(nextStateString);
+            }
+
 
             /*Add transition (and create new states)*/
             Transition transition = new CommonTransition(read, write, movement, nextState);

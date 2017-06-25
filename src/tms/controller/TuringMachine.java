@@ -1,12 +1,13 @@
 package tms.controller;
 
+import tms.model.Snapshot;
 import tms.model.State;
 import tms.model.Tape;
-import tms.model.Transition;
-import tms.thread.RunnableSimulation;
+import tms.thread.CallableSimulation;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.*;
 
 /**
  * Created by renan on 6/5/17.
@@ -24,7 +25,7 @@ public class TuringMachine{
     }
 
     public void loadFile(){
-        FileHandler fileHandler = new FileHandler("ab.mt");
+        FileHandler fileHandler = new FileHandler("m1.mt");
 
         try {
             fileHandler.loadMachine(states);
@@ -35,8 +36,21 @@ public class TuringMachine{
     }
 
     public void simulate(){
-        Thread mt = new Thread(new RunnableSimulation(states, tape, initialSymbol));
-        mt.run();
+        ExecutorService executorService = Executors.newCachedThreadPool();
+
+        Future<String> future = executorService.submit(new CallableSimulation(new Snapshot(states, tape, initialSymbol)));
+
+        try {
+            String result = future.get();
+            System.out.println(result);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        executorService.shutdown();
+
     }
 
     public HashMap<Integer, State> getStates() {
