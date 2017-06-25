@@ -1,5 +1,6 @@
 package tms.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -7,15 +8,27 @@ import java.util.HashMap;
  */
 public class Snapshot {
     private HashMap<Integer, State> states;
+    private int initialState;
     private Tape tape;
     private char initialSymbol;
     private String computations;
+    ArrayList<Transition> nondeterministicTransitions;
 
     public Snapshot(HashMap<Integer, State> states, Tape tape, char initialSymbol) {
         this.states = states;
         this.tape = tape;
         this.initialSymbol = initialSymbol;
         this.computations = "";
+        this.nondeterministicTransitions = new ArrayList<>();
+        this.initialState = 1;
+    }
+    public Snapshot(HashMap<Integer, State> states, Tape tape, char initialSymbol, int state) {
+        this.states = states;
+        this.tape = tape;
+        this.initialSymbol = initialSymbol;
+        this.computations = "";
+        this.nondeterministicTransitions = new ArrayList<>();
+        this.initialState = state;
     }
 
     public Snapshot(HashMap<Integer, State> states, Tape tape, char initialSymbol, String computations) {
@@ -23,6 +36,26 @@ public class Snapshot {
         this.tape = tape;
         this.initialSymbol = initialSymbol;
         this.computations = computations;
+        this.nondeterministicTransitions = new ArrayList<>();
+        this.initialState = 1;
+    }
+
+    public Snapshot(HashMap<Integer, State> states, Tape tape, char initialSymbol, String computations, ArrayList<Transition> nondeterministicTransitions) {
+        this.states = states;
+        this.tape = tape;
+        this.initialSymbol = initialSymbol;
+        this.computations = computations;
+        this.nondeterministicTransitions = nondeterministicTransitions;
+        this.initialState = 1;
+    }
+
+    public Snapshot(HashMap<Integer, State> states, int initialState, Tape tape, char initialSymbol, String computations, ArrayList<Transition> nondeterministicTransitions) {
+        this.states = states;
+        this.initialState = initialState;
+        this.tape = tape;
+        this.initialSymbol = initialSymbol;
+        this.computations = computations;
+        this.nondeterministicTransitions = nondeterministicTransitions;
     }
 
     public HashMap<Integer, State> getStates() {
@@ -55,5 +88,21 @@ public class Snapshot {
 
     public void setInitialSymbol(char initialSymbol) {
         this.initialSymbol = initialSymbol;
+    }
+
+    public ArrayList<Transition> getNondeterministicTransitions() {
+        return nondeterministicTransitions;
+    }
+
+    public void setNondeterministicTransitions(ArrayList<Transition> nondeterministicTransitions) {
+        this.nondeterministicTransitions = nondeterministicTransitions;
+    }
+
+    public int getInitialState() {
+        return initialState;
+    }
+
+    public void setInitialState(int initialState) {
+        this.initialState = initialState;
     }
 }

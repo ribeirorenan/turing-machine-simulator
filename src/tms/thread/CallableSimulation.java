@@ -2,6 +2,7 @@ package tms.thread;
 
 import tms.model.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 
@@ -14,44 +15,57 @@ public class CallableSimulation implements Callable {
     private HashMap<Integer, State> states;
     private Tape tape;
     private char initialSymbol;
+    private String computations;
+    private int initialState;
 
     public CallableSimulation(Snapshot snapshot) {
         this.states = snapshot.getStates();
         this.tape = snapshot.getTape();
         this.initialSymbol = snapshot.getInitialSymbol();
+        this.computations = snapshot.getComputations();
+        this.initialState = snapshot.getInitialState();
     }
 
     @Override
     public Object call() throws Exception {
-        State state = states.get(1);
+        State state = states.get(initialState);
         Transition transition;
-        char actualSymbol;
+        char actualSymbol = initialSymbol;
         if(state.getNumberOfTransitions(initialSymbol) == 1){
             transition = state.getTransition(initialSymbol);
         }
         else {
-            System.out.println(state.getTransitions(initialSymbol).toString());
-            transition = new HaltTransition("ters");
+            ArrayList transitions = state.getTransitions(actualSymbol);
+            return new Snapshot(states, initialState, tape, actualSymbol, computations, transitions);
         }
 
         while (!transition.isHalt()){
-
-            System.out.println("...." + state.getId() + ":" + tape.getTape());
+            computations = computations + "...." + state.getId() + ":" + tape.getTape() + "\n";
             tape.write(transition.getWrite());
             tape.move(transition.getMovement());
             actualSymbol = tape.getHeader();
             state = states.get(transition.getNextState());
-            transition = state.getTransition(actualSymbol);
-            if(transition == null){
-                transition = state.getHaltTransition();
+
+            if(state.getNumberOfTransitions(actualSymbol) <= 1){ //it is 1 common, or 0 common (only halt)
+                transition = state.getTransition(actualSymbol);
+                //Verify if the halts, or if there is no transition (not accept)
                 if(transition == null){
-                    System.out.println("No transition for state " + state.getId() + " and symbol " + actualSymbol + ".");
-                    break;
+                    transition = state.getHaltTransition();
+                    if(transition == null){
+                        System.out.println("No transition for state " + state.getId() + " and symbol " + actualSymbol + ".");
+                        break;
+                    }
+                    computations = computations + ("...." + state.getId() + ":"+transition.getMessage());
+                    ArrayList<Transition> halTransitions = new ArrayList<>();
+                    halTransitions.add(transition);
+                    Snapshot teste = new Snapshot(states, tape, actualSymbol, computations, halTransitions);
+                    return teste;
                 }
-                System.out.println("...." + state.getId() + ":"+transition.getMessage());
             }
+
         }
 
-        return "HI!";
+        Snapshot teste = new Snapshot(states, tape, actualSymbol, computations);
+        return teste;
     }
 }

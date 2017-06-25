@@ -3,6 +3,7 @@ package tms.controller;
 import tms.model.Snapshot;
 import tms.model.State;
 import tms.model.Tape;
+import tms.model.Transition;
 import tms.thread.CallableSimulation;
 
 import java.io.IOException;
@@ -38,11 +39,33 @@ public class TuringMachine{
     public void simulate(){
         ExecutorService executorService = Executors.newCachedThreadPool();
 
-        Future<String> future = executorService.submit(new CallableSimulation(new Snapshot(states, tape, initialSymbol)));
+        Future<Snapshot> future = executorService.submit(new CallableSimulation(new Snapshot(states, tape, initialSymbol)));
 
         try {
-            String result = future.get();
-            System.out.println(result);
+            Snapshot snapshot = future.get();
+
+            //Verify if there is no transition
+            if(snapshot.getNondeterministicTransitions().size() == 0){
+                System.out.println("No Transitions");
+                executorService.shutdown();
+                return;
+            }
+            //Verify if the Turing Machine was accepted
+            if(snapshot.getNondeterministicTransitions().size() > 1){
+                Tape tape = new Tape(snapshot.getTape().getTape());
+                for (Transition transition : snapshot.getNondeterministicTransitions()) {
+                    /*
+                    TODO: - create a function to execute one transition
+                     */
+//                    future = executorService.submit(new CallableSimulation(new Snapshot(states, snapshot.getInitialState(), tape, transition., snapshot.getComputations(), snapshot.getNondeterministicTransitions())));
+                    System.out.println(future.get().getNondeterministicTransitions().toString());
+                }
+
+                System.out.println(snapshot.getNondeterministicTransitions().toString());
+            }
+            else if(snapshot.getNondeterministicTransitions().get(0).isHalt()){
+                System.out.println(snapshot.getComputations().toString());
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
