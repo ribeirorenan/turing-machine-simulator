@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by renan on 6/22/17.
  */
-public class CallableSimulation implements Callable {
+public class RunnableSimulation implements Callable {
 
 
     private HashMap<Integer, State> states;
@@ -18,7 +18,7 @@ public class CallableSimulation implements Callable {
     private String computations;
     private int initialState;
 
-    public CallableSimulation(Snapshot snapshot) {
+    public RunnableSimulation(Snapshot snapshot) {
         this.states = snapshot.getStates();
         this.tape = snapshot.getTape();
         this.initialSymbol = snapshot.getInitialSymbol();

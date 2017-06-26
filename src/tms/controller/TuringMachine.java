@@ -4,7 +4,7 @@ import tms.model.Snapshot;
 import tms.model.State;
 import tms.model.Tape;
 import tms.model.Transition;
-import tms.thread.CallableSimulation;
+import tms.thread.RunnableSimulation;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class TuringMachine{
     public void simulate(){
         ExecutorService executorService = Executors.newCachedThreadPool();
 
-        Future<Snapshot> future = executorService.submit(new CallableSimulation(new Snapshot(states, tape, initialSymbol)));
+        Future<Snapshot> future = executorService.submit(new RunnableSimulation(new Snapshot(states, tape, initialSymbol)));
 
         try {
             Snapshot snapshot = future.get();
@@ -58,7 +58,7 @@ public class TuringMachine{
                     TODO: - implement the function below
                      */
                     Snapshot snapshotAux = simulateOneTransition(snapshot);
-//                    future = executorService.submit(new CallableSimulation(new Snapshot(states, snapshot.getInitialState(), tape, transition., snapshot.getComputations(), snapshot.getNondeterministicTransitions())));
+//                    future = executorService.submit(new RunnableSimulation(new Snapshot(states, snapshot.getInitialState(), tape, transition., snapshot.getComputations(), snapshot.getNondeterministicTransitions())));
                     System.out.println(future.get().getNondeterministicTransitions().toString());
                 }
 
