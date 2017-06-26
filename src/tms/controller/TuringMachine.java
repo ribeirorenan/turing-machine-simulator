@@ -50,20 +50,21 @@ public class TuringMachine{
                 executorService.shutdown();
                 return;
             }
-            //Verify if the Turing Machine was accepted
+            //Verify if there are more than one transition, simulate nondeterministic then and send again to the threads
             if(snapshot.getNondeterministicTransitions().size() > 1){
                 Tape tape = new Tape(snapshot.getTape().getTape());
                 for (Transition transition : snapshot.getNondeterministicTransitions()) {
                     /*
-                    TODO: - create a function to execute one transition
+                    TODO: - implement the function below
                      */
+                    Snapshot snapshotAux = simulateOneTransition(snapshot);
 //                    future = executorService.submit(new CallableSimulation(new Snapshot(states, snapshot.getInitialState(), tape, transition., snapshot.getComputations(), snapshot.getNondeterministicTransitions())));
                     System.out.println(future.get().getNondeterministicTransitions().toString());
                 }
 
                 System.out.println(snapshot.getNondeterministicTransitions().toString());
             }
-            else if(snapshot.getNondeterministicTransitions().get(0).isHalt()){
+            else if(snapshot.getNondeterministicTransitions().get(0).isHalt()){//Verify if the Turing Machine was accepted
                 System.out.println(snapshot.getComputations().toString());
             }
         } catch (InterruptedException e) {
@@ -75,6 +76,14 @@ public class TuringMachine{
         executorService.shutdown();
 
     }
+
+    private Snapshot simulateOneTransition(Snapshot snapshot){
+
+
+
+        return null;
+    }
+
 
     public HashMap<Integer, State> getStates() {
         return states;
