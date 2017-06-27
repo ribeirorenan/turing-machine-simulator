@@ -61,6 +61,8 @@ public class Snapshot {
         this.nondeterministicTransitions = nondeterministicTransitions;
     }
 
+
+
     public int getNumberOfComputations() {
         return numberOfComputations;
     }
