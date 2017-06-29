@@ -6,13 +6,16 @@ import java.util.HashMap;
 /**
  * Created by renan on 6/24/17.
  */
+
+
 public class Snapshot {
     private HashMap<Integer, State> states;
-    private int initialState;
     private Tape tape;
+    private int initialState;
     private char initialSymbol;
     private String computations;
-    ArrayList<Transition> nondeterministicTransitions;
+    private int numberOfComputations;
+    private ArrayList<Transition> nondeterministicTransitions;
 
     public Snapshot(HashMap<Integer, State> states, Tape tape, char initialSymbol) {
         this.states = states;
@@ -56,6 +59,16 @@ public class Snapshot {
         this.initialSymbol = initialSymbol;
         this.computations = computations;
         this.nondeterministicTransitions = nondeterministicTransitions;
+    }
+
+
+
+    public int getNumberOfComputations() {
+        return numberOfComputations;
+    }
+
+    public void setNumberOfComputations(int numberOfComputations) {
+        this.numberOfComputations = numberOfComputations;
     }
 
     public HashMap<Integer, State> getStates() {

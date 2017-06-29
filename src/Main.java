@@ -6,7 +6,7 @@ import tms.controller.TuringMachine;
 public class Main {
     public static void main(String[] args) {
 
-        TuringMachine turingMachine = new TuringMachine("aabb");
+        TuringMachine turingMachine = new TuringMachine("<bbb>", 100, 40);
 
         //Instantiate the states and transitions from a file
         turingMachine.loadFile();

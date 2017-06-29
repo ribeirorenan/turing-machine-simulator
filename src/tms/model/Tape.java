@@ -8,25 +8,32 @@ import com.sun.xml.internal.fastinfoset.util.CharArray;
 
 public class Tape {
     private String tape;
+    private String word;
     private int position;
 
 
-    public Tape(String tape) {
+    public Tape(String word) {
         /*Creates a string with the initial word and 20 spaces on both sides*/
         this.tape = "____________________";
-        this.tape = this.tape + tape;
+        this.tape = this.tape + word;
         this.tape = this.tape + "____________________";
+        this.word = word;
 
         /*Put the position to the first letter*/
         position = 20;
     }
 
     public String getTape() {
-        return tape.substring(0, position) + "<" + tape.substring(position, position+1) + ">" + tape.substring(position+1, tape.length());
+        return tape.substring(0, position) + "(" + tape.substring(position, position+1) + ")" + tape.substring(position+1, tape.length());
     }
 
+    public String getWord(){
+        return word;
+    }
+
+
     public void move(char symbol){
-        if(symbol == 'l'){
+        if(symbol == 'e'){
             moveLeft();
         }
         else if(symbol == 'd'){
@@ -72,9 +79,20 @@ public class Tape {
         return position;
     }
 
+    public void setWord(String word) {
+        this.word = word;
+    }
+
     public void setPosition(int position) {
         this.position = position;
     }
 
 
+    public Tape getNewTape() {
+        Tape newTape = new Tape(word);
+        newTape.setTape(tape);
+        newTape.setPosition(position);
+
+        return newTape;
+    }
 }

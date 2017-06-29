@@ -24,7 +24,7 @@ public class State {
             }
         }
 
-        return quantity;
+          return quantity;
     }
 
     public ArrayList<Transition> getTransitions(char symbol){
