@@ -5,6 +5,7 @@ import tms.model.State;
 import tms.model.Tape;
 import tms.model.Transition;
 import tms.thread.RunnableSimulation;
+import tms.thread.RunnableSimulationRejectedExecutionHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,17 +22,24 @@ public class TuringMachine{
     private char initialSymbol;
     private int maxComputation; //Max number of computations, delimited byr the user
     private int maxThreads; //Max number of threads, delimited byr the user
-    private ExecutorService executorService;
+//    private ExecutorService executorService; DEBUG
+    private ThreadPoolExecutor executorService;
     private ArrayList<RunnableSimulation> runnableSimulations; //runnableSimulations for threads (same number of maxThreads)
 
 
     public TuringMachine(String initialTapeWord, int computationLimit , int maxThreads) {
+        /*
+        Thread instances
+         */
+        RunnableSimulationRejectedExecutionHandler runnableSimulationRejectedExecutionHandler = new RunnableSimulationRejectedExecutionHandler();
+        ThreadFactory threadFactory = Executors.defaultThreadFactory();
+        this.executorService = new ThreadPoolExecutor(maxThreads, maxThreads, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(maxThreads), threadFactory);
         this.states = new HashMap<>();
         this.initialTape = new Tape(initialTapeWord);
         this.initialSymbol = this.initialTape.getHeader();
         this.maxComputation = computationLimit;
         this.maxThreads = maxThreads;
-        this.executorService = Executors.newFixedThreadPool(this.maxThreads);
+//        this.executorService = Executors.newFixedThreadPool(this.maxThreads); DEBUG
         //Instantiating the runnable threads
         this.runnableSimulations = new ArrayList<>();
         for (int i = 0; i < maxThreads; i++) {
@@ -53,10 +61,6 @@ public class TuringMachine{
     public void simulate(){
         //Execute the first thread
         executeThread(new Snapshot(states, initialTape, initialSymbol));
-//        if(executorService.isTerminated()){
-//            executorService.shutdown();
-//            System.out.println("Terminated By The Main");
-//        }
 
 
     }
@@ -77,10 +81,7 @@ public class TuringMachine{
             executorService.execute(runnableSimulation);
         }
         catch (Error e){
-            System.out.println("Executor Error.");
-            System.out.println("Executor Error.");
-            System.out.println("Executor Error.");
-            System.out.println("Executor Error.");
+            System.out.println("ExecuteThread Error.");
         }
     }
 
@@ -93,18 +94,27 @@ public class TuringMachine{
         System.out.println(snapshot.getComputations());
         System.out.println("FIM");
         try {
-            executorService.awaitTermination(10, TimeUnit.MILLISECONDS);
+            executorService.awaitTermination(10, TimeUnit.SECONDS);
+            System.out.println("Threads finalized friendly!");
         } catch (InterruptedException e) {
+            System.out.println("Forcing shutdown");
             e.printStackTrace();
         }
         executorService.shutdown();
     }
 
     public void notAccepted(Snapshot snapshot){
-        System.out.println(snapshot.getComputations());
-//        if(executorService.isTerminated()){
-//            executorService.shutdown();
-//        }
+//        System.out.println(snapshot.getComputations());
+        if(executorService.getActiveCount() <= 1){
+            try {
+                executorService.awaitTermination(10, TimeUnit.MILLISECONDS);
+                System.out.println(snapshot.getComputations());
+                executorService.shutdown();
+                System.out.println("Not Accepted");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -116,7 +126,6 @@ public class TuringMachine{
         for (RunnableSimulation runnableSimulation:runnableSimulations) {
             if(!runnableSimulation.isRunning()){
                 runnableSimulation = new RunnableSimulation(runnableSimulation.getId(), new Snapshot(states, this.initialTape, initialSymbol), this);
-//                runnableSimulation.setSnapshot(new Snapshot(states, this.initialTape, initialSymbol));
                 return runnableSimulation;
             }
         }
@@ -129,23 +138,19 @@ public class TuringMachine{
      * @param snapshot
      */
     public void handleNonDeterministicTransitions(Snapshot snapshot){
-        System.out.println(snapshot.getComputations());
-        System.out.println("New threads for: ");
         for (Transition transition : snapshot.getNondeterministicTransitions()) {
             Snapshot simulatedSnapshot =  simulateOneTransition(snapshot, transition);
-            executeThread(simulatedSnapshot);
+            if(!executorService.isShutdown()){
+                executeThread(simulatedSnapshot);
+            }
+
         }
 
     }
 
-
-
-
-
     private Snapshot simulateOneTransition(Snapshot snapshot, Transition transition){
         Tape newTape = snapshot.getTape().getNewTape();
         Snapshot simulatedSnapshot = new Snapshot(states, snapshot.getInitialState(), newTape, snapshot.getInitialSymbol(), snapshot.getComputations(), null) ;
-        System.out.println(transition.toString());
         simulatedSnapshot.setComputations(simulatedSnapshot.getComputations() + "...n" + simulatedSnapshot.getInitialState() + ":" + simulatedSnapshot.getTape().getTape() + "\n");
         simulatedSnapshot.getTape().write(transition.getWrite());
         simulatedSnapshot.getTape().move(transition.getMovement());
@@ -175,7 +180,7 @@ public class TuringMachine{
         return executorService;
     }
 
-    public void setExecutorService(ExecutorService executorService) {
+    public void setExecutorService(ThreadPoolExecutor executorService) {
         this.executorService = executorService;
     }
 

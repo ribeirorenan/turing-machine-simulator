@@ -19,8 +19,9 @@ public class RunnableSimulation implements Runnable {
     private String computations;
     private int initialState;
     private boolean running;
+    private int numberOfComputations;
     TuringMachine turingMachine;
-    Snapshot snapshot;
+    private Snapshot snapshot;
 
     public RunnableSimulation(int id, Snapshot snapshot, TuringMachine turingMachine) {
         this.id = id;
@@ -31,6 +32,7 @@ public class RunnableSimulation implements Runnable {
         this.computations = this.snapshot.getComputations();
         this.initialState = this.snapshot.getInitialState();
         this.turingMachine = turingMachine;
+        this.numberOfComputations = 0;
     }
 
     @Override
@@ -48,12 +50,6 @@ public class RunnableSimulation implements Runnable {
             Tape newTape = tape.getNewTape();
             Snapshot nondeterministicSnapshot = new Snapshot(states, state.getId(), newTape, initialSymbol, computations, transitions);
             turingMachine.handleNonDeterministicTransitions(nondeterministicSnapshot);
-            try {
-                this.running = false;
-                this.finalize();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-            }
             transition = new HaltTransition("end");
         }else{
             transition = new HaltTransition("No transition for it");
@@ -69,7 +65,13 @@ public class RunnableSimulation implements Runnable {
             tape.move(transition.getMovement());
             actualSymbol = tape.getHeader();
             state = states.get(transition.getNextState());
-            if(state.getNumberOfTransitions(actualSymbol) <= 1 || state.getNumberOfTransitions(actualSymbol) == 1){ //it is 1 common, or 0 common (only halt)
+            this.numberOfComputations++;
+            if(numberOfComputations > turingMachine.getMaxComputation()){
+                transition = new HaltTransition("Thread " + id + " reached limit of computations.");
+                computations = computations + ("..." + state.getId() + ":"+transition.getMessage());
+                snapshot.setComputations(computations);
+                turingMachine.notAccepted(snapshot);
+            } else if(state.getNumberOfTransitions(actualSymbol) <= 1 || state.getNumberOfTransitions(actualSymbol) == 1){ //it is 1 common, or 0 common (only halt)
                 transition = state.getTransition(actualSymbol);
                 //Verify if the halts, or if there is no transition (not accept)
                 if(transition == null){
@@ -90,7 +92,7 @@ public class RunnableSimulation implements Runnable {
                 }
             }
             else {
-                ArrayList transitions = state.getTransitions(actualSymbol);
+                ArrayList<Transition> transitions = state.getTransitions(actualSymbol);
                 Tape newTape = tape.getNewTape();
                 Snapshot nondeterministicSnapshot = new Snapshot(states, state.getId(), newTape, actualSymbol, computations, transitions);
                 turingMachine.handleNonDeterministicTransitions(nondeterministicSnapshot);
@@ -101,6 +103,7 @@ public class RunnableSimulation implements Runnable {
             }
 
         }
+
         this.running = false;
 //        turingMachine.tryToKillExecutor();
     }
@@ -161,6 +164,18 @@ public class RunnableSimulation implements Runnable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getNumberOfComputations() {
+        return numberOfComputations;
+    }
+
+    public void setNumberOfComputations(int numberOfComputations) {
+        this.numberOfComputations = numberOfComputations;
+    }
+
+    public Snapshot getSnapshot() {
+        return snapshot;
     }
 
     public void setSnapshot(Snapshot snapshot){
