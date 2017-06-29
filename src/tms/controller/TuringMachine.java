@@ -22,24 +22,27 @@ public class TuringMachine{
     private char initialSymbol;
     private int maxComputation; //Max number of computations, delimited byr the user
     private int maxThreads; //Max number of threads, delimited byr the user
-//    private ExecutorService executorService; DEBUG
     private ThreadPoolExecutor executorService;
     private ArrayList<RunnableSimulation> runnableSimulations; //runnableSimulations for threads (same number of maxThreads)
+    private String file;
 
-
-    public TuringMachine(String initialTapeWord, int computationLimit , int maxThreads) {
+    public TuringMachine(String file, String initialTapeWord, int computationLimit , int maxThreads) {
         /*
         Thread instances
          */
         RunnableSimulationRejectedExecutionHandler runnableSimulationRejectedExecutionHandler = new RunnableSimulationRejectedExecutionHandler();
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        this.executorService = new ThreadPoolExecutor(maxThreads, maxThreads, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(maxThreads), threadFactory);
+                /*
+        Thread instances
+         */
+        this.file = file;
+        this.executorService = new ThreadPoolExecutor(maxThreads, maxThreads, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(maxThreads), threadFactory, runnableSimulationRejectedExecutionHandler);
         this.states = new HashMap<>();
         this.initialTape = new Tape(initialTapeWord);
         this.initialSymbol = this.initialTape.getHeader();
         this.maxComputation = computationLimit;
         this.maxThreads = maxThreads;
-//        this.executorService = Executors.newFixedThreadPool(this.maxThreads); DEBUG
+
         //Instantiating the runnable threads
         this.runnableSimulations = new ArrayList<>();
         for (int i = 0; i < maxThreads; i++) {
@@ -48,7 +51,7 @@ public class TuringMachine{
     }
 
     public void loadFile(){
-        FileHandler fileHandler = new FileHandler("m2.mt");
+        FileHandler fileHandler = new FileHandler(this.file);
 
         try {
             fileHandler.loadMachine(states);
@@ -94,7 +97,7 @@ public class TuringMachine{
         System.out.println(snapshot.getComputations());
         System.out.println("FIM");
         try {
-            executorService.awaitTermination(10, TimeUnit.SECONDS);
+            executorService.awaitTermination(1, TimeUnit.SECONDS);
             System.out.println("Threads finalized friendly!");
         } catch (InterruptedException e) {
             System.out.println("Forcing shutdown");
