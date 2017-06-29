@@ -24,7 +24,7 @@ public class Tape {
     }
 
     public String getTape() {
-        return tape.substring(0, position) + "<" + tape.substring(position, position+1) + ">" + tape.substring(position+1, tape.length());
+        return tape.substring(0, position) + "(" + tape.substring(position, position+1) + ")" + tape.substring(position+1, tape.length());
     }
 
     public String getWord(){
@@ -79,9 +79,20 @@ public class Tape {
         return position;
     }
 
+    public void setWord(String word) {
+        this.word = word;
+    }
+
     public void setPosition(int position) {
         this.position = position;
     }
 
 
+    public Tape getNewTape() {
+        Tape newTape = new Tape(word);
+        newTape.setTape(tape);
+        newTape.setPosition(position);
+
+        return newTape;
+    }
 }

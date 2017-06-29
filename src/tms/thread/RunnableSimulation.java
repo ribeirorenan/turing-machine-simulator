@@ -22,7 +22,8 @@ public class RunnableSimulation implements Runnable {
     TuringMachine turingMachine;
     Snapshot snapshot;
 
-    public RunnableSimulation(Snapshot snapshot, TuringMachine turingMachine) {
+    public RunnableSimulation(int id, Snapshot snapshot, TuringMachine turingMachine) {
+        this.id = id;
         this.snapshot = snapshot;
         this.states = this.snapshot.getStates();
         this.tape = this.snapshot.getTape();
@@ -42,17 +43,24 @@ public class RunnableSimulation implements Runnable {
         if(state.getNumberOfTransitions(initialSymbol) == 1){
             transition = state.getTransition(initialSymbol);
         }
-        else {
+        else if(state.getNumberOfTransitions(initialSymbol) > 1){
             ArrayList transitions = state.getTransitions(actualSymbol);
-            Snapshot nondeterministicSnapshot = new Snapshot(states, state.getId(), new Tape(tape.getWord()), initialSymbol, computations, transitions);
+            Tape newTape = tape.getNewTape();
+            Snapshot nondeterministicSnapshot = new Snapshot(states, state.getId(), newTape, initialSymbol, computations, transitions);
             turingMachine.handleNonDeterministicTransitions(nondeterministicSnapshot);
-            this.running = false;
             try {
+                this.running = false;
                 this.finalize();
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
             }
             transition = new HaltTransition("end");
+        }else{
+            transition = new HaltTransition("No transition for it");
+            computations = computations + "..." + state.getId() + ":" + tape.getTape() + "\n";
+            computations = computations + ("No transition for state " + state.getId() + " and symbol " + actualSymbol + ".");
+            snapshot.setComputations(computations);
+            turingMachine.notAccepted(snapshot);
         }
 
         while (!transition.isHalt()){
@@ -67,11 +75,14 @@ public class RunnableSimulation implements Runnable {
                 if(transition == null){
                     transition = state.getHaltTransition();
                     if(transition == null){
-                        System.out.println("No transition for state " + state.getId() + " and symbol " + actualSymbol + ".");
+                        computations = computations + "..." + state.getId() + ":" + tape.getTape() + "\n";
+                        computations = computations + ("No transition for state " + state.getId() + " and symbol " + actualSymbol + ".");
+                        snapshot.setComputations(computations);
+                        turingMachine.notAccepted(snapshot);
                         break;
                     }
-                    computations = computations + "...." + state.getId() + ":" + tape.getTape() + "\n";
-                    computations = computations + ("...." + state.getId() + ":"+transition.getMessage());
+                    computations = computations + "..." + state.getId() + ":" + tape.getTape() + "\n";
+                    computations = computations + ("..." + state.getId() + ":"+transition.getMessage());
                     ArrayList<Transition> halTransitions = new ArrayList<>();
                     halTransitions.add(transition);
                     Snapshot acceptedSnapshot = new Snapshot(states, tape, actualSymbol, computations, halTransitions);
@@ -80,27 +91,20 @@ public class RunnableSimulation implements Runnable {
             }
             else {
                 ArrayList transitions = state.getTransitions(actualSymbol);
-                Snapshot nondeterministicSnapshot = new Snapshot(states, state.getId(), new Tape(tape.getWord()), initialSymbol, computations, transitions);
+                Tape newTape = tape.getNewTape();
+                Snapshot nondeterministicSnapshot = new Snapshot(states, state.getId(), newTape, actualSymbol, computations, transitions);
                 turingMachine.handleNonDeterministicTransitions(nondeterministicSnapshot);
-                this.running = false;
-                try {
-                    this.finalize();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
+                transition = new HaltTransition("Thread " + id + " finalized");
+                computations = computations + ("..." + state.getId() + ":"+transition.getMessage());
+                nondeterministicSnapshot.setComputations(computations);
+                turingMachine.notAccepted(nondeterministicSnapshot);
             }
 
         }
-        //may delete this shit
-//        System.out.println(computations.toString());
-//        Snapshot teste = new Snapshot(states, tape, actualSymbol, computations);
         this.running = false;
-        try {
-            this.finalize();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+//        turingMachine.tryToKillExecutor();
     }
+
 
 
     public boolean isRunning() {
